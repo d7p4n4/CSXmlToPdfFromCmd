@@ -11,13 +11,15 @@ namespace CSXmlToPdfFromCmd
     {
         static void Main(string[] args)
         {
-            for (int i = 0; i < 1; i++)
+            string time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+
+            for (int i = 0; i < 1000; i++)
             {
                 try
                 {
-                    OpenCommandLine();
+                    OpenCommandLine("" + i);
 
-                    //System.Diagnostics.Process.Start("CMD.exe", "/C echo oscar");
+                    //System.Diagnostics.Process.Start(@"d:\transform.bat");
                     /*
                     Process cmd = new Process();
                     cmd.StartInfo.FileName = "cmd.exe";
@@ -38,21 +40,50 @@ namespace CSXmlToPdfFromCmd
                     Console.WriteLine(exception.Message);
                 }
             }
+            string time2 = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+
+            Console.WriteLine("Start: " + time);
+            Console.WriteLine("End: " + time2);
         }
-        
-        public static void OpenCommandLine()
+
+        static void ExecuteCommand(string command)
+        {
+            var processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+            processInfo.CreateNoWindow = true;
+            processInfo.UseShellExecute = false;
+            processInfo.RedirectStandardError = true;
+            processInfo.RedirectStandardOutput = true;
+
+            var process = Process.Start(processInfo);
+
+            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                Console.WriteLine("output>>" + e.Data);
+            process.BeginOutputReadLine();
+
+            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+                Console.WriteLine("error>>" + e.Data);
+            process.BeginErrorReadLine();
+
+            process.WaitForExit();
+
+            Console.WriteLine("ExitCode: {0}", process.ExitCode);
+            process.Close();
+        }
+
+        private static void OpenCommandLine(string output)
         {
             try
             {
-
-                string MyBatchFile = @"c:\Program Files (x86)\fop-1.0\transform.bat";
-
-                Process process = new Process();
+                string MyBatchFile = @"D:\transform.bat";
+                Process process = new Process { StartInfo = { Arguments = string.Format("{0}", output) } };
                 process.StartInfo.FileName = MyBatchFile;
                 process.Start();
-                process.Close();
             }
-            catch (Exception exception)
+            catch (Exception e)
+            {
+
+            }
+            finally
             {
 
             }
