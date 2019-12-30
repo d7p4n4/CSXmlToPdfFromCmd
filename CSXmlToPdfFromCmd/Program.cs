@@ -11,13 +11,32 @@ namespace CSXmlToPdfFromCmd
     {
         static void Main(string[] args)
         {
+            // For complete examples and data files, please go to https://github.com/aspose-pdf/Aspose.PDF-for-.NET
+            // The path to the documents directory.
+            //string dataDir = RunExamples.GetDataDir_AsposePdf_WorkingDocuments();
+            //Create pdf document
+
             string time = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1; i++)
             {
                 try
                 {
-                    OpenCommandLine("" + i);
+                    Aspose.Pdf.Document pdf = new Aspose.Pdf.Document();
+                    //Bind XML and XSLT files to the document
+                    try
+                    {
+                        pdf.BindXml("c:\\evesAlakulas1.xml", "c:\\evesAlakulas1.xslt");
+                    }
+                    catch (System.Exception)
+                    {
+
+                        throw;
+                    }
+
+                    //Save the document
+                    pdf.Save("d:\\HelloWorldUsingXmlAndXslt.pdf");
+                    //OpenCommandLine("" + i);
                     
                 }
                 catch (Exception exception)
@@ -39,9 +58,9 @@ namespace CSXmlToPdfFromCmd
                 process.StartInfo.FileName = MyBatchFile;
                 process.Start();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-
+                Console.WriteLine(exception.Message);
             }
             finally
             {
